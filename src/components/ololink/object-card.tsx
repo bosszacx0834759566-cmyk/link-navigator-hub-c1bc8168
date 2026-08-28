@@ -192,7 +192,7 @@ export function ObjectCard({ state }: { state: OloLinkState }) {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 20, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-          className="pointer-events-auto absolute right-4 top-[68px] z-30 max-h-[calc(100vh-9.5rem)] w-[288px] overflow-y-auto rounded-xl border border-white/[0.08] bg-[#070b14]/90 p-4 shadow-[0_16px_50px_-16px_rgba(0,0,0,0.9)] backdrop-blur-xl"
+          className="pointer-events-auto absolute right-4 top-[140px] z-30 max-h-[calc(100vh-13rem)] w-[288px] overflow-y-auto rounded-xl border border-white/[0.08] bg-[#070b14]/90 p-4 shadow-[0_16px_50px_-16px_rgba(0,0,0,0.9)] backdrop-blur-xl"
         >
           <div className="mb-3 flex items-start justify-between gap-2">
             <div>
