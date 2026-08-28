@@ -4,6 +4,7 @@ import { lazy, Suspense } from 'react';
 import { useOloLink } from '@/hooks/use-ololink';
 import { TopBar } from '@/components/ololink/top-bar';
 import { Rail } from '@/components/ololink/rail';
+import { WorkspaceTabs } from '@/components/ololink/workspace-tabs';
 import { ContextPanel } from '@/components/ololink/context-panel';
 import { ObjectCard } from '@/components/ololink/object-card';
 import { Dock } from '@/components/ololink/dock';
@@ -57,6 +58,14 @@ function Explorer() {
 
       {/* command status layer */}
       <TopBar state={state} />
+
+      {/* workspace tabs — system navigation */}
+      <WorkspaceTabs
+        active={state.panel}
+        onSelect={state.togglePanel}
+        alertCount={state.profile.alerts.length}
+        onAlerts={() => state.togglePanel('alerts')}
+      />
 
       {/* LEVEL 2 — navigation rail */}
       <Rail
