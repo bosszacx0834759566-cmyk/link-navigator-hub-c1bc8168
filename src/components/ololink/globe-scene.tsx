@@ -1894,6 +1894,46 @@ function SceneContent({
   );
 }
 
+const REGION_PRESETS: PresetId[] = ['global', 'thailand', 'united-states'];
+const VIEW_PRESETS: PresetId[] = ['orbit', 'active-link'];
+
+function CamGroup({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="px-1 font-mono text-[8px] uppercase tracking-[0.24em] text-muted-foreground/50">
+        {title}
+      </span>
+      <div className="flex items-center gap-0.5">{children}</div>
+    </div>
+  );
+}
+
+function CamButton({
+  label,
+  hint,
+  active,
+  onClick,
+}: {
+  label: string;
+  hint: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      title={hint}
+      onClick={onClick}
+      aria-pressed={active}
+      className={`rounded-[6px] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.18em] transition-colors ${
+        active ? 'bg-sky-300/15 text-sky-100' : 'text-sky-100/50 hover:bg-white/[0.06] hover:text-sky-100/90'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function GlobeScene({ state }: { state: OloLinkState }) {
   const [lod, setLod] = useState<LodState>({ level: 'global', region: null });
   const onLod = useMemo(() => (s: LodState) => setLod(s), []);
