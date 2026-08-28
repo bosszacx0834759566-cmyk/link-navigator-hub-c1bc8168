@@ -1894,6 +1894,46 @@ function SceneContent({
   );
 }
 
+const REGION_PRESETS: PresetId[] = ['global', 'thailand', 'united-states'];
+const VIEW_PRESETS: PresetId[] = ['orbit', 'active-link'];
+
+function CamGroup({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="px-1 font-mono text-[8px] uppercase tracking-[0.24em] text-muted-foreground/50">
+        {title}
+      </span>
+      <div className="flex items-center gap-0.5">{children}</div>
+    </div>
+  );
+}
+
+function CamButton({
+  label,
+  hint,
+  active,
+  onClick,
+}: {
+  label: string;
+  hint: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      title={hint}
+      onClick={onClick}
+      aria-pressed={active}
+      className={`rounded-[6px] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.18em] transition-colors ${
+        active ? 'bg-sky-300/15 text-sky-100' : 'text-sky-100/50 hover:bg-white/[0.06] hover:text-sky-100/90'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
 export function GlobeScene({ state }: { state: OloLinkState }) {
   const [lod, setLod] = useState<LodState>({ level: 'global', region: null });
   const onLod = useMemo(() => (s: LodState) => setLod(s), []);
@@ -1927,51 +1967,45 @@ export function GlobeScene({ state }: { state: OloLinkState }) {
         </LodContext.Provider>
       </Canvas>
 
-      {/* view-level indicator — tells the operator which detail tier is active */}
-      <div className="pointer-events-none absolute left-1/2 top-[68px] z-20 -translate-x-1/2">
-        <div className="flex items-center gap-2 rounded-full border border-white/[0.07] bg-[#070b14]/70 px-3 py-1 backdrop-blur-md">
-          {(['global', 'regional', 'local'] as LodLevel[]).map((l) => (
-            <span
-              key={l}
-              className={`h-1 w-5 rounded-full transition-colors ${
-                lod.level === l ? 'bg-sky-300' : 'bg-white/12'
-              }`}
-            />
-          ))}
-          <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-sky-100/70">
-            {LOD_LABEL[lod.level]}
-            {lod.region ? ` · ${REGION_BY_ID[lod.region]?.short}` : ''}
-          </span>
-        </div>
-      </div>
+      {/* camera controls — grouped: region · view · action (kept minimal, off the Earth) */}
+      <div className="absolute left-1/2 top-[92px] z-20 -translate-x-1/2">
+        <div className="flex items-stretch gap-3 rounded-[10px] border border-white/[0.07] bg-[#070b14]/72 px-2.5 py-1.5 backdrop-blur-md">
+          <CamGroup title="Region">
+            {CAMERA_PRESETS.filter((p) => REGION_PRESETS.includes(p.id)).map((p) => (
+              <CamButton key={p.id} label={p.label} hint={p.hint} active={preset === p.id} onClick={() => goTo(p.id)} />
+            ))}
+          </CamGroup>
 
-      {/* smart camera presets — known-good readable angles */}
-      <div className="absolute left-1/2 top-[100px] z-20 -translate-x-1/2">
-        <div className="flex items-center gap-1 rounded-full border border-white/[0.07] bg-[#070b14]/70 px-1.5 py-1 backdrop-blur-md">
-          {CAMERA_PRESETS.map((p) => (
+          <span className="w-px self-stretch bg-white/[0.08]" />
+
+          <CamGroup title="View">
+            {CAMERA_PRESETS.filter((p) => VIEW_PRESETS.includes(p.id)).map((p) => (
+              <CamButton key={p.id} label={p.label} hint={p.hint} active={preset === p.id} onClick={() => goTo(p.id)} />
+            ))}
+          </CamGroup>
+
+          <span className="w-px self-stretch bg-white/[0.08]" />
+
+          <CamGroup title="Action">
             <button
-              key={p.id}
               type="button"
-              title={p.hint}
-              onClick={() => goTo(p.id)}
-              className={`rounded-full px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.2em] transition-colors ${
-                preset === p.id
-                  ? 'bg-sky-300/15 text-sky-100'
-                  : 'text-sky-100/50 hover:bg-white/[0.06] hover:text-sky-100/90'
-              }`}
+              title="Return to the optimal readable operational angle"
+              onClick={() => goTo('global')}
+              className="rounded-[6px] border border-sky-300/25 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-sky-200/80 transition-colors hover:border-sky-300/60 hover:text-sky-100"
             >
-              {p.label}
+              Operational View
             </button>
-          ))}
-          <span className="mx-0.5 h-3 w-px bg-white/10" />
-          <button
-            type="button"
-            title="Return to the optimal readable operational angle"
-            onClick={() => goTo('global')}
-            className="rounded-full border border-sky-300/25 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.2em] text-sky-200/80 transition-colors hover:border-sky-300/60 hover:text-sky-100"
-          >
-            Operational View
-          </button>
+          </CamGroup>
+
+          <span className="w-px self-stretch bg-white/[0.08]" />
+
+          <div className="flex flex-col justify-between py-[1px] pr-1">
+            <span className="font-mono text-[8px] uppercase tracking-[0.24em] text-muted-foreground/50">Tier</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-sky-100/70">
+              {LOD_LABEL[lod.level]}
+              {lod.region ? ` · ${REGION_BY_ID[lod.region]?.short}` : ''}
+            </span>
+          </div>
         </div>
       </div>
     </LabelLayer>

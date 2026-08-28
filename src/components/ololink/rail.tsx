@@ -84,7 +84,7 @@ export function Rail({
   const settings = RAIL_ITEMS.find((i) => i.id === 'settings')!;
 
   return (
-    <nav className="pointer-events-auto absolute bottom-0 left-0 top-12 z-30 flex w-[60px] flex-col items-center border-r border-white/[0.06] bg-black/60 py-3 backdrop-blur-xl">
+    <nav className="pointer-events-auto absolute bottom-0 left-0 top-[84px] z-30 flex w-[60px] flex-col items-center border-r border-white/[0.06] bg-black/60 py-3 backdrop-blur-xl">
       <div className="flex flex-col items-center gap-1.5">
         {main.map((item) => (
           <RailButton
